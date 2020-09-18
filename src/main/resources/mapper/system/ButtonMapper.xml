@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.demo.dao.system.SysButtonDao">
+
+    <sql id="Base_Column_List">
+        button.id,button_name,button_type,click_event,button.icon_class,button.css_class,button.is_enabled,button.sort
+    </sql>
+
+    <select id="getCheckedList" parameterType="java.util.Map" resultType="com.demo.entity.system.SystemButton">
+        select
+        <include refid="Base_Column_List"></include>
+        from system_button button
+        join (select tt.menu_id,tt.button_id from system_role_menu_button tt where tt.role_id in
+            <foreach collection="listRoleId" index="index" item="roleId" open="(" separator="," close=")">
+                #{roleId}
+            </foreach>
+            and tt.menu_id=#{menuId} group by tt.menu_id,tt.button_id)roleButtonMenu
+            on roleButtonMenu.button_id=button.id where button.is_delete=0 order by button.sort
+    </select>
+</mapper>

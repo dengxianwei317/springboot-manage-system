@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.demo.dao.system.SysMenuDao">
+
+    <sql id="Base_Column_List">
+        t1.id,route_path,t1.name,t1.icon_class,component_path,parent_id,is_require_auth,t1.sort
+    </sql>
+
+    <select id="getListPermissionMenu" parameterType="java.util.List" resultType="com.demo.entity.system.SystemMenu">
+        select
+        <include refid="Base_Column_List"></include>
+        from system_menu t1
+        join (select menu.id from system_menu menu
+        join system_role_menu roleMenu on menu.id=roleMenu.menu_id
+        join system_role role on role.id=roleMenu.role_id
+        where role.id in
+        <foreach collection="list" index="index" item="roleId" open="(" separator="," close=")">
+            #{roleId}
+        </foreach>
+        group by menu.id)t2 on t1.id=t2.id where t1.is_delete=0 and t1.is_enabled='1' order by t1.sort
+    </select>
+</mapper>

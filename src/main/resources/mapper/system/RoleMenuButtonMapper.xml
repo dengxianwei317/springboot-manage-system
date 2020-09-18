@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.demo.dao.system.SysRoleMenuButtonDao">
+
+    <delete id="batchDelete" parameterType="java.util.Map">
+        delete from system_role_menu_button
+        where role_id = #{roleId} and menu_id = #{menuId} and button_id in
+        <foreach collection="buttonIds" index="index" item="buttonId" open="(" separator="," close=")">
+            #{buttonId}
+        </foreach>
+    </delete>
+</mapper>

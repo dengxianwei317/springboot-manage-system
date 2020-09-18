@@ -1,0 +1,59 @@
+server:
+  port: 9090
+
+logging:
+  config: classpath:logback.xml
+
+spring:
+  datasource:
+    driverClassName: com.mysql.cj.jdbc.Driver
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/testdb?serverTimezone=Asia/Shanghai&characterEncoding=utf8
+    username: root
+    password: 123
+
+  redis:
+    database: 0
+    host: localhost
+    port: 6379
+    password: 123
+    jedis:
+      pool:
+        min-idle: 10
+        max-idle: 50
+        max-active: 200
+        max-wait: 3000
+
+token:
+  #  token有效时间：分钟, 24*60=1440
+  tokenExpireTime: 1440
+  #  token刷新时间：分钟, 2*60=120
+  tokenRefreshTime: 120
+  #  shiro缓存有效时间：分钟,2*60=120
+  shiroCacheExpireTime: 120
+  #  token秘钥
+  secretKey: storywebkey
+
+#动态设置拦截器 注意顺序,authc需要认证的uri，anon排除认证的uri
+permission-config:
+  perms:
+    - key: /api/system/**
+      value: jwt
+    - key: /api/authentication
+      value: jwt
+    - key: /api/file/**
+      value: jwt
+    - key: /**
+      value: anon
+
+mybatis-plus:
+  global-config:
+    #刷新mapper 调试神器
+    refresh-mapper: true
+  configuration:
+    #map-underscore-to-camel-case: true
+    cache-enabled: false
+    #日志打印sql
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+
