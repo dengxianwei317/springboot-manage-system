@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.demo.dao.system.SysMenuDao">
+<mapper namespace="com.spring.dao.system.SysMenuDao">
 
     <sql id="Base_Column_List">
         t1.id,route_path,t1.name,t1.icon_class,component_path,parent_id,is_require_auth,t1.sort
     </sql>
 
-    <select id="getListPermissionMenu" parameterType="java.util.List" resultType="com.demo.entity.system.SystemMenu">
+    <select id="getListPermissionMenu" parameterType="java.util.List" resultType="com.spring.entity.system.SystemMenu">
         select
         <include refid="Base_Column_List"></include>
         from system_menu t1

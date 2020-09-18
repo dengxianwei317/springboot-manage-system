@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.demo.dao.system.SysPermissionDao">
+<mapper namespace="com.spring.dao.system.SysPermissionDao">
 
-    <select id="getCheckedList" parameterType="java.util.Map" resultType="com.demo.entity.system.SystemPermission">
+    <select id="getCheckedList" parameterType="java.util.Map" resultType="com.spring.entity.system.SystemPermission">
         select t1.id,t1.name,t1.code,t1.is_enabled
         from system_permission t1
         join system_role_permission t2 on t2.permission_id=t1.id

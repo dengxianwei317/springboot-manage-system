@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.demo.dao.system.SysUserDao">
-    <resultMap id="userResultMap" type="com.demo.entity.system.SystemUser">
+<mapper namespace="com.spring.dao.system.SysUserDao">
+    <resultMap id="userResultMap" type="com.spring.entity.system.SystemUser">
         <id property="id" column="userId"></id>
         <result property="userName" column="user_name"></result>
         <result property="account" column="account"></result>
-        <collection property="listRole" ofType="com.demo.entity.system.SystemRole">
+        <collection property="listRole" ofType="com.spring.entity.system.SystemRole">
             <id property="id" column="roleId"></id>
             <result property="roleName" column="role_name"></result>
             <result property="roleNameZh" column="role_name_zh"></result>
@@ -25,7 +25,7 @@
         where user.id = #{userId} and role.is_delete=0 and role.is_enabled='1'
     </select>
 
-    <select id="getCheckedList" parameterType="java.util.Map" resultType="com.demo.entity.system.SystemUser">
+    <select id="getCheckedList" parameterType="java.util.Map" resultType="com.spring.entity.system.SystemUser">
         select user.id,user_name,account,user.is_enabled
         from system_user user
         join system_user_role userRole on user.id=userRole.user_id
