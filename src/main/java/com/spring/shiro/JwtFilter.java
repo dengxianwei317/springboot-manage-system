@@ -9,6 +9,7 @@ import com.spring.entity.system.SystemUser;
 import com.spring.service.system.SysUserService;
 import com.spring.utils.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter;
 import org.springframework.stereotype.Component;
 
@@ -50,17 +51,8 @@ public class JwtFilter extends BasicHttpAuthenticationFilter {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         String token = request.getHeader(StringConstant.REQUEST_HEADER);
 
-        Boolean isAuthenticated = getSubject(servletRequest, response).isAuthenticated();
-
-        //权限预热必须是登录状态
-        if (!isAuthenticated) {
-            getSubject(servletRequest, response).login(new JwtToken(token));
-        }
-
-        isAuthenticated = getSubject(servletRequest, response).isAuthenticated();
-
-        if (!isAuthenticated)
-            response400(response);
+        Subject subject = getSubject(servletRequest, response);
+        subject.login(new JwtToken(token));
 
         String cacheUserKey = StringConstant.CACHE_USER + JwtUtils.getClaim(token, StringConstant.ACCOUNT);
         if (!RedisUtils.exists(cacheUserKey)) {
@@ -68,9 +60,6 @@ public class JwtFilter extends BasicHttpAuthenticationFilter {
             SystemUser user = userService.getEntity(id);
             RedisUtils.set(cacheUserKey, user, tokenProperties.getTokenExpireTime());
         }
-
-        if (UserContext.getCurrentUser() == null)
-            new UserContext((SystemUser) RedisUtils.get(cacheUserKey));
 
         //检查是否需要更换token，需要则重新颁发
         isRefreshToken(token, response);

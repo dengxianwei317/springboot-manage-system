@@ -116,7 +116,6 @@ public class MenuController {
     /*
     * 获取角色分配的菜单
     * */
-    @RequiresPermissions(SysMenuConstant.SYS_MENU_QUERY)
     @GetMapping(value = "/getListPermissionMenu")
     @ResponseBody
     public Result getListPermissionMenu(@RequestParam(name = "roleIds") List<String> listRoleId) {

@@ -2,6 +2,8 @@ package com.spring.aspect;
 
 import com.spring.utils.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.*;
@@ -93,6 +95,7 @@ public class SysLogAspect {
         log.info("进入Shiro日志切面异常通知!!");
         log.error("方法名：" + joinPoint.getSignature().getName(), exception);
     }
+
 
     private String getParams(JoinPoint joinPoint) {
         //通知的签名
