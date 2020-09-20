@@ -51,40 +51,23 @@ public class JwtFilter extends BasicHttpAuthenticationFilter {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         String token = request.getHeader(StringConstant.REQUEST_HEADER);
 
-        Subject subject = getSubject(servletRequest, response);
-        subject.login(new JwtToken(token));
+        if (!JwtUtils.checkToken(token))
+            response400(response);
+        else {
+            Subject subject = getSubject(servletRequest, response);
+            subject.login(new JwtToken(token));
 
-        String cacheUserKey = StringConstant.CACHE_USER + JwtUtils.getClaim(token, StringConstant.ACCOUNT);
-        if (!RedisUtils.exists(cacheUserKey)) {
-            String id = JwtUtils.getClaim(token, StringConstant.USER_ID);
-            SystemUser user = userService.getEntity(id);
-            RedisUtils.set(cacheUserKey, user, tokenProperties.getTokenExpireTime());
-        }
-
-        //检查是否需要更换token，需要则重新颁发
-        isRefreshToken(token, response);
-
-        return true;
-    }
-
-    /*
-     * 重写阻止socket关闭后再次请求
-     * */
-    @Override
-    public void doFilterInternal(ServletRequest request, ServletResponse response, FilterChain chain) throws ServletException, IOException {
-        Exception exception = null;
-
-        try {
-            boolean continueChain = this.preHandle(request, response);
-
-            if (continueChain) {
-                this.executeChain(request, response, chain);
+            String cacheUserKey = StringConstant.CACHE_USER + JwtUtils.getClaim(token, StringConstant.ACCOUNT);
+            if (!RedisUtils.exists(cacheUserKey)) {
+                String id = JwtUtils.getClaim(token, StringConstant.USER_ID);
+                SystemUser user = userService.getEntity(id);
+                RedisUtils.set(cacheUserKey, user, tokenProperties.getTokenExpireTime());
             }
-        } catch (Exception ex) {
-            exception = ex;
-        } finally {
-            this.cleanup(request, response, exception);
+
+            //检查是否需要更换token，需要则重新颁发
+            isRefreshToken(token, response);
         }
+        return true;
     }
 
     /**
@@ -173,6 +156,26 @@ public class JwtFilter extends BasicHttpAuthenticationFilter {
     protected boolean onAccessDenied(ServletRequest request, ServletResponse response) {
         this.sendChallenge(request, response);
         return false;
+    }
+
+    /*
+     * 重写阻止socket关闭后再次请求
+     * */
+    @Override
+    public void doFilterInternal(ServletRequest request, ServletResponse response, FilterChain chain) throws ServletException, IOException {
+        Exception exception = null;
+
+        try {
+            boolean continueChain = this.preHandle(request, response);
+
+            if (continueChain) {
+                this.executeChain(request, response, chain);
+            }
+        } catch (Exception ex) {
+            exception = ex;
+        } finally {
+            this.cleanup(request, response, exception);
+        }
     }
 
     /**

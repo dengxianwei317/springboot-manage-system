@@ -130,7 +130,6 @@ public class ButtonController {
         return result;
     }
 
-    @RequiresPermissions(SysButtonConstant.SYS_BUTTON_QUERY)
     @GetMapping(value = "/getCheckedList")
     @ResponseBody
     public Result getCheckedList(@RequestParam(name = "roleIds") List<String> listRoleId,

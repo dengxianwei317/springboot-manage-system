@@ -68,7 +68,7 @@ public class JwtUtils {
         // 帐号加JWT私钥加密
         String secret = user.getAccount() + tokenEntity.getSecretKey();
         // 此处过期时间，单位：毫秒
-        Date date = new Date(System.currentTimeMillis() + tokenEntity.getTokenExpireTime() * 60 * 1000l);
+        Date dateExpires = new Date(System.currentTimeMillis() + tokenEntity.getTokenExpireTime() * 60 * 1000l);
         Algorithm algorithm = Algorithm.HMAC256(secret);
 
         try {
@@ -77,7 +77,7 @@ public class JwtUtils {
                     .withClaim(StringConstant.USER_ID, user.getId())
                     .withClaim(StringConstant.USER_NAME, user.getUserName())
                     .withClaim(StringConstant.CURRENT_TIME_MILLIS, currentTimeMillis)
-                    .withExpiresAt(date)
+                    .withExpiresAt(dateExpires)
                     .sign(algorithm);
         } catch (Exception e) {
             e.printStackTrace();

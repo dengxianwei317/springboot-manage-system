@@ -1,11 +1,9 @@
 package com.spring.shiro;
 
 
-import com.spring.constant.StringConstant;
 import com.spring.entity.system.SystemRole;
 import com.spring.service.system.SysPermissionService;
 import com.spring.service.system.SysUserService;
-import com.spring.utils.JwtUtils;
 import com.spring.utils.ShiroUtils;
 import com.spring.utils.UserContext;
 import lombok.extern.slf4j.Slf4j;
@@ -72,10 +70,6 @@ public class ShiroRealm extends AuthorizingRealm {
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken auth) throws AuthenticationException {
         String token = (String) auth.getPrincipal();
-        Boolean isValid = JwtUtils.checkToken(token);
-
-        if (!isValid)
-            new AuthenticationException("token无效");
 
         String salt = ShiroUtils.getSalt();
         String tokenHash = ShiroUtils.getHashPassword(token, salt);
